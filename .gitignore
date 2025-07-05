@@ -1,0 +1,5 @@
+.DS_Store
+_minted-*
+*.synctex.*
+*.bbl
+/LR5-adv
