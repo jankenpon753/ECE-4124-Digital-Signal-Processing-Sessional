@@ -6,12 +6,12 @@
 \usepackage[english]{babel}
 \usepackage{titling}
 \usepackage{float}
-% \usepackage{amsmath}
-% \usepackage{minted}
-% \usepackage{multicol}
-% \usepackage{array}
-% \usepackage{setspace}
-% \usepackage{placeins}
+\usepackage{amsmath}
+\usepackage{minted}
+\usepackage{multicol}
+\usepackage{array}
+\usepackage{setspace}
+\usepackage{placeins}
 
 % \usepackage{lipsum}
 
@@ -33,32 +33,130 @@
 
 \section*{Theory}
 \addcontentsline{toc}{section}{Theory}
+In digital signal processing, several basic discrete-time signals serve as the building blocks for analyzing and synthesizing more complex signals~\cite{oppenheim_dsp}. The three most important among these are:
 
-% \begin{figure}[H]
-%     \centering
-%     \includegraphics[width=0.8\textwidth]{sigGen2.png}
-%     \caption{Signal Generator}
-%     % \label{fig:Signal Generator}
-% \end{figure}
+\begin{enumerate}
+    \item \textbf{Unit Impulse Signal ($\delta[n]$):} \\
+          The unit impulse signal, $\delta[n]$, is defined as:
+          \[
+              \delta[n] =
+              \begin{cases}
+                  1, & n = 0    \\
+                  0, & n \neq 0
+              \end{cases}
+          \]
+          \begin{itemize}
+              \item Serves as the identity element in convolution operations~\cite{oppenheim_dsp}.
+              \item Has a value of 1 only at $n=0$ and 0 elsewhere.
+              \item Commonly used to determine a system's impulse response.
+          \end{itemize}
+
+          \begin{figure}[H]
+              \centering
+              \includegraphics[width=0.6\textwidth]{impulse.png}
+              \caption{Unit Impulse Signal $u[n]$}
+          \end{figure}
+
+
+    \item \textbf{Unit Step Signal ($u[n]$):} \\
+          The unit step signal, $u[n]$, is defined as:
+          \[
+              u[n] =
+              \begin{cases}
+                  1, & n \geq 0 \\
+                  0, & n < 0
+              \end{cases}
+          \]
+          \begin{itemize}
+              \item Switches from 0 to 1 at $n=0$ and remains at 1 for all subsequent $n$.
+              \item Can be interpreted as the running sum of the impulse signal: $u[n] = \sum_{k=-\infty}^{n} \delta[k]$~\cite{oppenheim_dsp}.
+          \end{itemize}
+
+          \begin{figure}[H]
+              \centering
+              \includegraphics[width=0.6\textwidth]{Step.png}
+              \caption{Unit Step Signal $u[n]$}
+          \end{figure}
+
+    \item \textbf{Unit Ramp Signal ($r[n]$):} \\
+          The unit ramp signal, $r[n]$, is defined as:
+          \[
+              r[n] =
+              \begin{cases}
+                  0, & n < 0    \\
+                  n, & n \geq 0
+              \end{cases}
+          \]
+          \begin{itemize}
+              \item Increases linearly with $n$ starting from zero.
+              \item Represents the cumulative sum (discrete integration) of the unit step signal: $r[n] = \sum_{k=-\infty}^{n} u[k]$~\cite{oppenheim_dsp}.
+          \end{itemize}
+
+          \begin{figure}[H]
+              \centering
+              \includegraphics[width=0.6\textwidth]{ramp.png}
+              \caption{Ramp Signal $u[n]$}
+          \end{figure}
+\end{enumerate}
+
+\section*{Used Tools}
+\addcontentsline{toc}{section}{Used Tools}
+\begin{itemize}
+    \item Matlab
+    \item LaTex
+\end{itemize}
+
+\section*{Code \& Output}
+\addcontentsline{toc}{section}{Code \& Output}
+
+\subsection*{Unit Impulse Signal}
+\addcontentsline{toc}{subsection}{Unit Impulse Signal}
+\inputminted[fontsize=\small, linenos]{matlab}{assets/lr1_unitImpulse.m}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{LR1_plot2.png}
+    \caption{Unit Impulse Signal $u[n]$}
+\end{figure}
+
+\subsection*{Unit Step Signal}
+\addcontentsline{toc}{subsection}{Unit Step Signal}
+\inputminted[fontsize=\small, linenos]{matlab}{assets/lr1_unitStep.m}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{LR1_plot1.png}
+    \caption{Unit Step Signal $u[n]$}
+\end{figure}
+
+
+\subsection*{Unit Ramp Signal}
+\addcontentsline{toc}{subsection}{Unit Ramp Signal}
+\inputminted[fontsize=\small, linenos]{matlab}{assets/lr1_ramp.m}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{LR1_plot3.png}
+    \caption{Ramp Signal $r[n]$}
+\end{figure}
+
+\subsection*{Conversion}
+\addcontentsline{toc}{subsection}{Conversion}
+\inputminted[fontsize=\small, linenos]{matlab}{assets/lr1_conversion.m}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{LR1_plot4.png}
+    \caption{Conversion of Signals}
+\end{figure}
 
 \section*{Discussion}
 \addcontentsline{toc}{section}{Discussion}
-In this experiment, we worked with two essential tools in electronics laboratories: the oscilloscope and the signal generator. The oscilloscope allows us to visualize electronic signals, while the signal generator produces a variety of signals at adjustable frequencies. Together, these devices play a critical role in testing and analyzing electronic circuits.\\\\
-We gained hands-on experience by using these tools to observe and evaluate signals. Adjustments were made to both devices to see how changes in settings affected the signals. Additionally, we connected the signal generator to the oscilloscope to monitor the generated waveforms directly on the screen.\\\\
-This practical session was highly beneficial, providing us with valuable experience in using these tools effectively. It demonstrated their importance in the field of electronics for testing, troubleshooting, and analyzing circuits.\\\\
-In summary, the oscilloscope and signal generator are indispensable instruments in any electronics laboratory. The oscilloscope offers a detailed representation of signal characteristics, while the signal generator provides controlled test signals. By combining their functionalities, they allow engineers to create, measure, and analyze signals, ensuring that electronic devices and circuits perform as expected.
+In this experiment, we generated and transformed basic discrete-time signals—specifically the impulse, step, and ramp signals—using MATLAB. The “cumsum” function~\cite{matlab_cumsum} was essential for computing the cumulative sum, enabling us to convert a step signal into a ramp signal and an impulse signal into a step signal, thereby emulating discrete-time integration. Conversely, the “diff” function~\cite{matlab_diff} was used to perform discrete differentiation, allowing us to derive the step signal from the ramp and the impulse signal from the step. The resulting plots from these operations closely aligned with theoretical expectations, validating the correct implementation of these signal relationships. These hands-on conversions provided valuable insight into the mathematical links between the signals and reinforced our understanding of their interdependence.
 
-\section*{Precaution \& Conclusion}
-\addcontentsline{toc}{section}{Precaution}
-To ensure safe and effective use of the equipment, the following precautions were observed during the experiment:
-\begin{itemize}
-    \item Both the oscilloscope and signal generator were powered off when not in use to prevent potential damage.
-    \item Probes and cables were connected or disconnected only when the devices were switched off to maintain safety and avoid electrical faults.
-    \item Settings on the instruments were adjusted carefully to prevent any misconfigurations or damage to the devices.
-    \item Only the provided, calibrated probes and cables were used to ensure accurate measurements.
-    \item After completing the experiment, all equipment was returned to its designated safe storage location.\\\\
-\end{itemize}
-This experiment reinforced the critical role of the oscilloscope and signal generator in electronics. It highlighted their complementary functionalities, with the oscilloscope visualizing signal behavior and the signal generator providing precise, controllable inputs for testing. Through this exercise, we developed a deeper understanding of how these tools are used in real-world applications to diagnose, validate, and optimize electronic circuits. Moreover, adhering to proper precautions ensured the longevity of the equipment and the safety of the users, emphasizing the importance of best practices in a laboratory setting.
+\section*{Conclusion}
+\addcontentsline{toc}{section}{Conclusion}
+The experiment effectively illustrated the generation and transformation of fundamental discrete-time signals using essential MATLAB functions. Through examining the characteristics and interconnections of the impulse, step, and ramp signals, we obtained practical understanding of their significance in digital signal processing. Employing functions such as \texttt{cumsum} and \texttt{diff} enabled us to model discrete-time integration and differentiation, respectively, and confirm theoretical principles via graphical results.
 
 \bibliographystyle{IEEEtran}
 \renewcommand{\bibname}{References}
