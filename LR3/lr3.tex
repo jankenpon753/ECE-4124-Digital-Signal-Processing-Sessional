@@ -1,0 +1,222 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper, total={6.5in, 9.4in}]{geometry}
+\usepackage{graphicx}
+\graphicspath{ {./images/output/} }
+\usepackage{caption}
+\usepackage[english]{babel}
+\usepackage{titling}
+\usepackage{float}
+\usepackage{amsmath}
+\usepackage{minted}
+\usepackage{multicol}
+\usepackage{array}
+\usepackage{setspace}
+\usepackage{placeins}
+
+\usepackage{parskip}
+
+% \usepackage{lipsum}
+
+\title{Study of Linear and Circular Convolution, Cross-Correlation, and Auto-Correlation of Discrete Signals}
+\author{}
+\date{}
+
+\pagenumbering{gobble}
+\begin{document}
+\input{faysal_sir_cover.tex}
+
+\pagebreak
+
+\tableofcontents
+
+\pagebreak
+\pagenumbering{arabic}
+\maketitle
+
+\section*{Theory}
+\addcontentsline{toc}{section}{Theory}
+In digital signal processing, convolution and correlation are fundamental operations for analyzing and manipulating discrete-time signals~\cite{salivahanan_dsp, proakis_dsp, jervis_dsp}. These techniques are widely used in system analysis, filtering, and pattern recognition.
+
+\textbf{1. Linear Convolution:} \\
+Linear convolution combines two discrete signals to produce a third signal that represents the amount of overlap between the signals as one slides past the other. For signals $x[n]$ and $h[n]$, the linear convolution is defined as:
+\begin{equation}
+    y[n] = \sum_{k=-\infty}^{\infty} x[k] \cdot h[n-k]
+\end{equation}
+Linear convolution is used to determine the output of linear time-invariant (LTI) systems and is essential in filtering applications.
+
+\textbf{2. Circular Convolution:} \\
+Circular convolution assumes the signals are periodic and wraps around the ends. For two sequences of length $N$, the circular convolution is:
+\begin{equation}
+    y[n] = \sum_{k=0}^{N-1} x[k] \cdot h[(n-k) \bmod N]
+\end{equation}
+Circular convolution is important in fast algorithms such as the Fast Fourier Transform (FFT) and in systems where signals are inherently periodic.
+
+\textbf{3. Cross Correlation:} \\
+Cross correlation measures the similarity between two signals as one is shifted over the other. For $x[n]$ and $y[n]$:
+\begin{equation}
+    r_{xy}[m] = \sum_{n=-\infty}^{\infty} x[n] \cdot y[n+m]
+\end{equation}
+It is used in pattern matching, signal detection, and time delay estimation.
+
+\textbf{4. Auto Correlation:} \\
+Auto correlation is the cross correlation of a signal with itself. For $x[n]$:
+\begin{equation}
+    r_{xx}[m] = \sum_{n=-\infty}^{\infty} x[n] \cdot x[n+m]
+\end{equation}
+Auto correlation is used to analyze signal properties such as periodicity and to detect repeating patterns.
+
+\vspace{0.5em}
+\textbf{Plotting and Comparison:} \\
+By plotting the results of linear convolution, circular convolution, cross correlation, and auto correlation for a given signal $x(n)$, differences in their behavior can be observed. Linear convolution typically produces a longer output sequence than circular convolution, which wraps around and maintains the original length. Correlation operations reveal similarities and periodicities in signals, with auto correlation highlighting self-similarity and cross correlation showing the relationship between two signals. Understanding these differences is crucial for selecting the appropriate operation in practical signal processing tasks.
+
+\section*{Used Tools}
+\addcontentsline{toc}{section}{Used Tools}
+\begin{itemize}
+    \item Matlab Online
+    \item LaTex
+\end{itemize}
+
+\section*{Code \& Output}
+\addcontentsline{toc}{section}{Code \& Output}
+
+\subsection*{1. Convolution and Correlation of Discrete Signals}
+\addcontentsline{toc}{subsection}{Convolution and Correlation of Discrete Signals}
+\begin{multicols}{2}
+    \inputminted[fontsize=\small, linenos, breaklines]{matlab}{assets/task1.m}
+\end{multicols}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{task1.png}
+    \caption{Operations on $x(n)$ and $h(n)$}
+\end{figure}
+
+\subsubsection*{Comments on Differences}
+\begin{itemize}
+    \item Linear convolution gives a longer output (length = $L+M-1$) and represents the true convolution in the time domain.
+    \item Circular convolution assumes periodicity and wraps around, so the result may differ from linear convolution unless signals are zero-padded.
+    \item Cross-correlation measures similarity between $x(n)$ and $h(n)$ as one is shifted over the other.
+    \item Auto-correlation measures similarity of $x(n)$ with itself, peaking at zero lag.
+\end{itemize}
+
+\subsection*{2. Convolution and Correlation of Discrete Sinusoidal Signals}
+\addcontentsline{toc}{subsection}{Convolution and Correlation of Discrete Sinusoidal Signals}
+
+\begin{multicols}{2}
+    \inputminted[fontsize=\small, linenos, breaklines]{matlab}{assets/task2.m}
+\end{multicols}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{task2.png}
+    \caption{Operations on $x(n) = \sin(n)$ and $h(n) = \cos(n)$}
+\end{figure}
+
+\subsubsection*{Comments on Differences}
+\begin{itemize}
+    \item Linear convolution gives the true time-domain result; the output is longer than the input signals.
+    \item Circular convolution wraps around and assumes periodicity, so the result may differ from linear convolution.
+    \item Cross-correlation shows similarity between the two signals as one slides over the other.
+    \item Auto-correlation peaks at zero lag, indicating self-similarity and periodicity.
+\end{itemize}
+
+\subsection*{3. Convolution and Correlation of Transformed Discrete Signals I}
+\addcontentsline{toc}{subsection}{Convolution and Correlation of Transformed Discrete Signals I}
+
+\begin{multicols}{2}
+    \inputminted[fontsize=\small, linenos, breaklines]{matlab}{assets/task3.m}
+\end{multicols}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{task3.png}
+    \caption{Operations on $x(3n-2)$ and $-h(n+2)$}
+\end{figure}
+
+\subsubsection*{Comments on Differences}
+\begin{itemize}
+    \item Linear convolution gives the full convolution result, including edge effects.
+    \item Circular convolution wraps around, so results differ at the edges.
+    \item Cross-correlation measures similarity between two signals as one is shifted over the other.
+    \item Auto-correlation measures similarity of a signal with itself, peaking at zero lag.
+\end{itemize}
+
+
+\subsection*{4. Convolution and Correlation of Transformed Discrete Signals II}
+\addcontentsline{toc}{subsection}{Convolution and Correlation of Transformed Discrete Signals II}
+
+\begin{multicols}{2}
+    \inputminted[fontsize=\small, linenos, breaklines]{matlab}{assets/task4.m}
+\end{multicols}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{task4.png}
+    \caption{Operations on $x(-n+4)$ and $h(-n-3)$}
+\end{figure}
+
+\subsubsection*{Comments on Differences}
+\begin{itemize}
+    \item Linear convolution gives a longer, true result; circular wraps and may cause aliasing unless zero-padded.
+    \item Measures similarity between $x(-n+4)$ and $h(-n-3)$ as one shifts over the other.
+    \item Measures self-similarity of $x(-n+4)$, peaking at zero lag.
+\end{itemize}
+
+\subsection*{5. Convolution and Correlation of Transformed Discrete Sinusoidal Signals I}
+\addcontentsline{toc}{subsection}{Convolution and Correlation of Transformed Discrete Sinusoidal Signals I}
+
+\begin{multicols}{2}
+    \inputminted[fontsize=\small, linenos, breaklines]{matlab}{assets/task5.m}
+\end{multicols}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{task5.png}
+    \caption{Operations on $x(3n-2)$ and $-h(n+2)$}
+\end{figure}
+
+\subsubsection*{Comments on Differences}
+\begin{itemize}
+    \item Linear convolution: true time-domain result, longer output.
+    \item Circular convolution: wraps around, assumes periodicity.
+    \item Cross-correlation: shows similarity as signals shift.
+    \item Auto-correlation: peaks at zero lag, self-similarity.
+\end{itemize}
+
+
+\subsection*{6. Convolution and Correlation of Transformed Discrete Sinusoidal Signals II}
+\addcontentsline{toc}{subsection}{Convolution and Correlation of Transformed Discrete Sinusoidal Signals II}
+
+\begin{multicols}{2}
+    \inputminted[fontsize=\small, linenos, breaklines]{matlab}{assets/task6.m}
+\end{multicols}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{task6.png}
+    \caption{Operations on $x(-n+4)$ and $h(-n-3)$}
+\end{figure}
+
+\subsubsection*{Comments on Differences}
+\begin{itemize}
+    \item Linear: True result, longer output.
+    \item Circular: Wraps, assumes periodicity.
+    \item Cross-correlation: Shows similarity as signals shift.
+    \item Auto-correlation: Peaks at zero lag, self-similarity.
+\end{itemize}
+
+
+\section*{Discussion}
+\addcontentsline{toc}{section}{Discussion}
+This experiment explored the practical differences between linear convolution, circular convolution, cross correlation, and auto correlation for discrete signals using MATLAB. By applying these operations to both arbitrary and sinusoidal signals, the distinct output characteristics were observed. Linear convolution produced longer output sequences, reflecting the full overlap between signals, while circular convolution maintained the original signal length due to periodic wrapping. Cross correlation revealed the degree of similarity and alignment between two signals, and auto correlation highlighted repeating patterns and periodicity within a single signal. The MATLAB results matched theoretical expectations, demonstrating how each operation serves specific purposes in signal analysis and processing.
+
+\section*{Conclusion}
+\addcontentsline{toc}{section}{Conclusion}
+The experiment successfully demonstrated the implementation and comparison of convolution and correlation operations on discrete signals using MATLAB. Linear and circular convolution, as well as cross and auto correlation, were applied to different signal types, and their outputs were analyzed. The results confirmed the theoretical properties of each operation and illustrated their relevance in digital signal processing tasks such as filtering, pattern recognition, and system analysis. This hands-on approach reinforced the importance of selecting the appropriate operation based on the application requirements.
+
+\bibliographystyle{IEEEtran}
+\renewcommand{\bibname}{References}
+\addcontentsline{toc}{section}{References}
+\bibliography{ref}
+
+\end{document}
