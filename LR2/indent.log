@@ -1,7 +1,7 @@
-INFO:  latexindent.pl version 3.24.5, 2025-03-13, a script to indent .tex files
-       latexindent.pl lives here: /opt/homebrew/Cellar/latexindent/3.24.5/libexec/bin/
-       Sat Aug  2 15:37:02 2025
-       Filename: /Users/md.tajim/Academics/4-1/ECE 4123 Digital Signal Processing/Lab Materials/LR3/__latexindent_temp_faysal_sir_cover.tex
+INFO:  latexindent.pl version 3.24.7, 2025-08-15, a script to indent .tex files
+       latexindent.pl lives here: /opt/homebrew/Cellar/latexindent/3.24.7/libexec/bin/
+       Fri Oct 10 14:48:27 2025
+       Filename: /Users/md.tajim/Academics/4-1/ECE 4123 Digital Signal Processing/Lab Materials/LR4/__latexindent_temp_faysal_sir_cover.tex
 INFO:  Processing switches:
        -y|--yaml: YAML settings specified via command line
        -c|--cruft: cruft directory
@@ -9,15 +9,15 @@ INFO:  Directory for backup files and log file /Users/md.tajim/Academics/4-1/ECE
        /Users/md.tajim/Academics/4-1/ECE 4123 Digital Signal Processing/Lab Materials/LR2/
 INFO:  Perl modules are being loaded from the following directories:
        /opt/homebrew/opt/perl/lib/perl5/5.40/FindBin.pm
-       /opt/homebrew/Cellar/latexindent/3.24.5/libexec/lib/perl5/YAML/Tiny.pm
+       /opt/homebrew/Cellar/latexindent/3.24.7/libexec/lib/perl5/YAML/Tiny.pm
        /opt/homebrew/opt/perl/lib/perl5/5.40/File/Copy.pm
        /opt/homebrew/opt/perl/lib/perl5/5.40/File/Basename.pm
        /opt/homebrew/opt/perl/lib/perl5/5.40/Getopt/Long.pm
-       /opt/homebrew/Cellar/latexindent/3.24.5/libexec/lib/perl5/File/HomeDir.pm
+       /opt/homebrew/Cellar/latexindent/3.24.7/libexec/lib/perl5/File/HomeDir.pm
 INFO:  LatexIndent perl modules are being loaded from, for example:
-       /opt/homebrew/Cellar/latexindent/3.24.5/libexec/lib/perl5/LatexIndent/Document.pm
+       /opt/homebrew/Cellar/latexindent/3.24.7/libexec/lib/perl5/LatexIndent/Document.pm
 INFO:  YAML settings read: defaultSettings.yaml
-       Reading defaultSettings.yaml from /opt/homebrew/Cellar/latexindent/3.24.5/libexec/bin/defaultSettings.yaml
+       Reading defaultSettings.yaml from /opt/homebrew/Cellar/latexindent/3.24.7/libexec/bin/defaultSettings.yaml
 INFO:  YAML reading settings
        Home directory is /Users/md.tajim
        latexindent.pl didn't find indentconfig.yaml or .indentconfig.yaml
