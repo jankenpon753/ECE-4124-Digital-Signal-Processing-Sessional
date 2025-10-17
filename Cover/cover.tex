@@ -1,0 +1,41 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper, total={6.5in, 9.4in}]{geometry}
+\usepackage{graphicx}
+\graphicspath{ {./images/output/} }
+\usepackage{caption}
+\usepackage[english]{babel}
+\usepackage{titling}
+\usepackage{float}
+\usepackage{amsmath}
+\usepackage{minted}
+\usepackage{multicol}
+\usepackage{array}
+\usepackage{setspace}
+\usepackage{placeins}
+
+\usepackage{parskip}
+
+% \usepackage{lipsum}
+
+\begin{document}
+
+\pagenumbering{gobble}
+
+\input{faysal_sir_cover.tex}
+\pagebreak
+
+\begin{center}
+    {\Large\bfseries Table of Contents}\\[1em]
+    \small
+    \begin{tabular}{|>{\centering\arraybackslash}p{0.05\textwidth}|>{\raggedright\arraybackslash}p{0.70\textwidth}|>{\centering\arraybackslash}p{0.18\textwidth}|}
+        \hline
+        \textbf{Exp No.} & \textbf{Experiment Name}                                                                              & \textbf{Date}      \\ \hline
+        1                & Study of Impulse, Step, and Ramp signals and their inter-relationships                                & July 5, 2025       \\ \hline
+        2                & Study of Shifting, Folding \& Scaling of Discrete Signals                                             & July 21, 2025      \\ \hline
+        3                & Study of Linear and Circular Convolution, Cross-Correlation, and Auto-Correlation of Discrete Signals & August 2, 2025     \\ \hline
+        4                & Performing DFT to compute Convolution Between Two Signals                                             & September 13, 2025 \\ \hline
+        5                & Implementation of FFT and IFFT on Discrete Signal                                                     & October 11, 2025   \\ \hline
+    \end{tabular}
+\end{center}
+
+\end{document}
