@@ -1,0 +1,176 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper, total={6.5in, 9.4in}]{geometry}
+\usepackage{graphicx}
+\graphicspath{ {./images/output/} }
+\usepackage{caption}
+\usepackage[english]{babel}
+\usepackage{titling}
+\usepackage{float}
+\usepackage{amsmath}
+\usepackage{minted}
+\usepackage{multicol}
+\usepackage{array}
+\usepackage{setspace}
+\usepackage{placeins}
+
+\usepackage{parskip}
+
+% \usepackage{lipsum}
+
+\title{Implementation of FFT and IFFT on Discrete Signal}
+\author{}
+\date{}
+
+\pagenumbering{gobble}
+\begin{document}
+\input{faysal_sir_cover.tex}
+
+\pagebreak
+
+\tableofcontents
+
+\pagebreak
+\pagenumbering{arabic}
+\maketitle
+
+\section*{Theory}
+\addcontentsline{toc}{section}{Theory}
+
+\subsection*{FFT and IFFT}
+\addcontentsline{toc}{subsection}{FFT and IFFT}
+The Discrete Fourier Transform (DFT) of a length-N sequence x[n] is
+\begin{equation}
+    X[k] = \sum_{n=0}^{N-1} x[n]\,e^{-j\frac{2\pi}{N}kn}, \qquad k=0,\dots,N-1,
+\end{equation}
+and the inverse (IDFT) is
+\begin{equation}
+    x[n] = \frac{1}{N}\sum_{k=0}^{N-1} X[k]\,e^{j\frac{2\pi}{N}kn}, \qquad n=0,\dots,N-1.
+\end{equation}
+
+The Fast Fourier Transform (FFT) is an efficient algorithm to compute the DFT. The common radix-2 decimation-in-time (DIT) FFT splits x[n] into even and odd indexed subsequences:
+\begin{align}
+    x_{\text{e}}[m] & = x[2m], & x_{\text{o}}[m] & = x[2m+1], \quad m=0,\dots,\tfrac{N}{2}-1.
+\end{align}
+Let $X_e[k]$ and $X_o[k]$ be the DFTs of $x_e$ and $x_o$ (length $N/2$). Then for $k=0,\dots,N/2-1$:
+\begin{align}
+    X[k]     & = X_e[k] + W_N^k\,X_o[k], \\
+    X[k+N/2] & = X_e[k] - W_N^k\,X_o[k],
+\end{align}
+where the twiddle factor is $W_N = e^{-j2\pi/N}$. Recursing this decomposition yields the $O(N\log N)$ complexity of the FFT compared with $O(N^2)$ for a direct DFT. The original decimation-based algorithm and many practical variants are discussed in the classic Cooley–Tukey paper and in standard DSP textbooks \cite{cooley1965algorithm,proakis2007digital,oppenheim2010discrete}.
+
+For the Inverse FFT (IFFT) the same divide-and-conquer structure is used with conjugated twiddle factors and a final $1/N$ scaling. Practical notes (see also \cite{lyons2011understanding,oppenheim2010discrete}):
+- FFT implementations typically require $N$ to be a power of two; zero-padding is used otherwise.
+- Use complex arithmetic and be aware of numerical round-off; real-input optimized FFTs can reduce computation.
+- In MATLAB use \texttt{fft(x,N)} and \texttt{ifft(X,N)}, where $N$ is the transform length (zero-pad if needed) \cite{proakis2007digital}.
+
+\subsection*{Examples}
+\addcontentsline{toc}{subsection}{Examples}
+
+Example 1 — 4-point FFT (radix-2 demonstration).
+
+Let x[n] = [1,\,2,\,3,\,4] (N=4). Compute the 4-point DFT directly:
+\begin{align*}
+    X[0] & = 1+2+3+4 = 10,                                              \\
+    X[1] & = 1 + 2e^{-j\pi/2} + 3e^{-j\pi} + 4e^{-j3\pi/2} = -2 + 2j,   \\
+    X[2] & = 1 + 2e^{-j\pi} + 3e^{-j2\pi} + 4e^{-j3\pi} = -2,           \\
+    X[3] & = 1 + 2e^{-j3\pi/2} + 3e^{-j3\pi} + 4e^{-j9\pi/2} = -2 - 2j.
+\end{align*}
+Using radix-2 FFT: split even indices $x_e=[1,3]$, odd $x_o=[2,4]$; compute 2-point DFTs (cheap), then combine with $W_4^k$ factors to obtain the same $X[k]$ above. This illustrates the decomposition and reuse of sub-transforms \cite{oppenheim2010discrete,lyons2011understanding}.
+
+Example 2 — IFFT reconstruction.
+
+Given X = [10,\,-2+2j,\,-2,\,-2-2j], the IDFT (or IFFT) reconstructs x[n]:
+\begin{equation*}
+    x[n] = \frac{1}{4}\sum_{k=0}^{3} X[k]\,e^{j\frac{2\pi}{4}kn}.
+\end{equation*}
+Evaluating (or using \texttt{ifft} in MATLAB) yields x = [1,\,2,\,3,\,4], showing perfect reconstruction (within numerical precision) \cite{proakis2007digital}.
+
+Practical MATLAB usage:
+\begin{itemize}
+    \item Compute FFT: \texttt{X = fft(x, N);} \\
+    \item Compute IFFT: \texttt{x = ifft(X, N);} \\
+    \item Zero-pad to length \verb|N = 2^nextpow2(length(x))| for faster transforms.
+\end{itemize}
+
+Summary: FFT/IFFT provide computationally efficient forward and inverse transformations between time and frequency domains. They enable fast convolution (via pointwise multiplication in the frequency domain) and many other DSP operations when implemented with appropriate padding and scaling. For further reading and rigorous treatment see the cited textbooks and original algorithm literature \cite{oppenheim2010discrete,proakis2007digital,lyons2011understanding,cooley1965algorithm}.
+
+\section*{Used Tools}
+\addcontentsline{toc}{section}{Used Tools}
+\begin{itemize}
+    \item Matlab Online
+    \item LaTex
+\end{itemize}
+
+\section*{Code \& Output}
+\addcontentsline{toc}{section}{Code \& Output}
+
+\subsection*{Code}
+\addcontentsline{toc}{subsection}{Code}
+\begin{multicols}{2}
+    \inputminted[fontsize=\small, linenos, breaklines]{matlab}{assets/fft.m}
+\end{multicols}
+
+\subsection*{Output}
+\addcontentsline{toc}{subsection}{Output}
+\begin{figure}[H]
+    \centering
+    \begin{minted}[fontsize=\small]{text}
+DFT Result X[k]:
+   2.0000 + 0.0000i   2.0000 - 2.0000i   6.0000 + 0.0000i   2.0000 + 2.0000i
+
+Reconstructed sequence using IDFT x[n]:
+   3.0000 + 0.0000i  -0.0000 + 0.0000i   1.0000 + 0.0000i  -2.0000 + 0.0000i
+
+Reconstructed (real part):
+    3.0000   -0.0000    1.0000   -2.0000
+
+Reconstructed (imag part):
+   1.0e-15 *
+
+    0.1110    0.1665    0.2776    0.3331
+
+Max reconstruction error (abs): 4.44089e-16
+    \end{minted}
+    \caption{Console Output}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{plot.png}
+    \caption{Plot Output}
+\end{figure}
+
+\section*{Discussion}
+\addcontentsline{toc}{section}{Discussion}
+This experiment (Implementation of FFT and IFFT on Discrete Signal) computed the forward and inverse discrete Fourier transforms using FFT and IFFT. The computed results printed by the MATLAB code are shown below:
+
+\begin{minted}[fontsize=\small]{text}
+DFT Result X[k]:
+   2.0000 + 0.0000i   2.0000 - 2.0000i   6.0000 + 0.0000i   2.0000 + 2.0000i
+
+Reconstructed sequence using IDFT x[n]:
+   3.0000 + 0.0000i  -0.0000 + 0.0000i   1.0000 + 0.0000i  -2.0000 + 0.0000i
+
+Reconstructed (real part):
+    3.0000   -0.0000    1.0000   -2.0000
+
+Reconstructed (imag part):
+   1.0e-15 *
+
+    0.1110    0.1665    0.2776    0.3331
+
+Max reconstruction error (abs): 4.44089e-16
+\end{minted}
+
+The IFFT output reconstructs the time-domain sequence from the frequency-domain samples. When the input to IFFT is the exact DFT of a time sequence (with appropriate length and ordering), the inverse transform recovers the original samples (within numerical precision). If discrepancies occur in other cases, check transform length, zero-padding, and index ordering (bit-reversal) or scaling conventions.
+
+\section*{Conclusion}
+\addcontentsline{toc}{section}{Conclusion}
+The FFT and IFFT were implemented and tested. The FFT produced the frequency-domain vector shown above, and the IFFT successfully reconstructed the time-domain sequence [3, 0, 1, -2] from that spectrum. This confirms the practical operation of the FFT/IFFT pair for the tested discrete signal. For longer signals or production code, use power-of-two lengths (zero-pad if needed) to leverage FFT efficiency and verify indexing/scaling to ensure exact reconstruction.
+
+\bibliographystyle{IEEEtran}
+\renewcommand{\bibname}{References}
+\addcontentsline{toc}{section}{References}
+\bibliography{ref}
+
+\end{document}
