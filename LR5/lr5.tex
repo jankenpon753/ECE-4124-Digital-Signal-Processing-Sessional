@@ -115,54 +115,34 @@ Summary: FFT/IFFT provide computationally efficient forward and inverse transfor
 \begin{figure}[H]
     \centering
     \begin{minted}[fontsize=\small]{text}
-DFT Result X[k]:
+Computed FFT:
    2.0000 + 0.0000i   2.0000 - 2.0000i   6.0000 + 0.0000i   2.0000 + 2.0000i
 
-Reconstructed sequence using IDFT x[n]:
-   3.0000 + 0.0000i  -0.0000 + 0.0000i   1.0000 + 0.0000i  -2.0000 + 0.0000i
-
-Reconstructed (real part):
-    3.0000   -0.0000    1.0000   -2.0000
-
-Reconstructed (imag part):
-   1.0e-15 *
-
-    0.1110    0.1665    0.2776    0.3331
-
-Max reconstruction error (abs): 4.44089e-16
+Recovered sequence via IFFT:
+     3     0     1    -2
     \end{minted}
     \caption{Console Output}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{plot.png}
+    \includegraphics[width=\textwidth]{plot_f.png}
     \caption{Plot Output}
 \end{figure}
 
 \section*{Discussion}
 \addcontentsline{toc}{section}{Discussion}
-This experiment (Implementation of FFT and IFFT on Discrete Signal) computed the forward and inverse discrete Fourier transforms using FFT and IFFT. The computed results printed by the MATLAB code are shown below:
+This experiment (Implementation of FFT and IFFT on Discrete Signal) computed the forward and inverse transforms using MATLAB's FFT and IFFT. The computed results printed by the MATLAB code are shown below:
 
 \begin{minted}[fontsize=\small]{text}
-DFT Result X[k]:
-   2.0000 + 0.0000i   2.0000 - 2.0000i   6.0000 + 0.0000i   2.0000 + 2.0000i
+Computed FFT:
+    2.0000 + 0.0000i   2.0000 - 2.0000i   6.0000 + 0.0000i   2.0000 + 2.0000i
 
-Reconstructed sequence using IDFT x[n]:
-   3.0000 + 0.0000i  -0.0000 + 0.0000i   1.0000 + 0.0000i  -2.0000 + 0.0000i
-
-Reconstructed (real part):
-    3.0000   -0.0000    1.0000   -2.0000
-
-Reconstructed (imag part):
-   1.0e-15 *
-
-    0.1110    0.1665    0.2776    0.3331
-
-Max reconstruction error (abs): 4.44089e-16
+Recovered sequence via IFFT:
+      3     0     1    -2
 \end{minted}
 
-The IFFT output reconstructs the time-domain sequence from the frequency-domain samples. When the input to IFFT is the exact DFT of a time sequence (with appropriate length and ordering), the inverse transform recovers the original samples (within numerical precision). If discrepancies occur in other cases, check transform length, zero-padding, and index ordering (bit-reversal) or scaling conventions.
+Note: the spectrum above is the result of the FFT (not a direct $N^2$ DFT computation). The IFFT recovers the original time-domain sequence (within numerical precision). If discrepancies appear in other cases, verify transform length, zero-padding, indexing/ordering and scaling conventions.
 
 \section*{Conclusion}
 \addcontentsline{toc}{section}{Conclusion}

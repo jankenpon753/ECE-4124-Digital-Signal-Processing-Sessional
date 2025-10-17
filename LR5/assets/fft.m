@@ -1,100 +1,64 @@
-% raw_dft_idft.m
-% Compute DFT and IDFT using raw (direct) summation and show results in console
+clc;
+clear;
+close all;
 
+% Input signal definition
 x = [3 0 1 -2];
-
-% DFT (raw)
-X = my_dft(x);
-
-% IDFT (raw)
-x_reconstructed = my_idft(X);
-
-% Display in console
-disp('DFT Result X[k]:');
-disp(X);
-disp('Reconstructed sequence using IDFT x[n]:');
-disp(x_reconstructed);
-disp('Reconstructed (real part):');
-disp(real(x_reconstructed));
-disp('Reconstructed (imag part):');
-disp(imag(x_reconstructed));
-
-err = max(abs(x - real(x_reconstructed)));
-fprintf('Max reconstruction error (abs): %g\n', err);
-
-% Prepare indices
 N = length(x);
-n = 0:N-1;
-k = 0:N-1;
+n = 0:N-1;  % sample indices
 
-% Single figure with subfigures (tiledlayout)
+% FFT computation
+X = fft(x);
+
+% Inverse FFT to reconstruct the original sequence
+x_reconstructed = ifft(X);
+
+% Display results in the console
+disp('Computed FFT:');
+disp(X);
+disp('Recovered sequence via IFFT:');
+disp(x_reconstructed);
+
+% Create a single figure with 2x2 subplots
 figure;
-t = tiledlayout(5,1,'Padding','compact','TileSpacing','compact');
 
-% 1: Original sequence
-nexttile;
-stem(n, x, 'filled');
-title('Original sequence x[n]');
-xlabel('n'); ylabel('Amplitude');
+% Plot 1: Time-domain input
+subplot(2,2,1);
+stem(n, x, 'filled', 'LineWidth', 1.5);
+title('Discrete-time input signal');
+xlabel('n (sample index)');
+ylabel('Amplitude');
 grid on;
+set(gca, 'FontSize', 12);
 
-% 2: Magnitude of DFT
-nexttile;
-stem(k, abs(X), 'filled');
-title('Magnitude of DFT |X[k]|');
-xlabel('k (frequency bin)'); ylabel('|X[k]|');
+% Plot 2: Magnitude spectrum
+subplot(2,2,2);
+stem(n, abs(X), 'filled', 'LineWidth', 1.5);
+title('FFT magnitude');
+xlabel('k (frequency bin)');
+ylabel('Magnitude |X(k)|');
 grid on;
+set(gca, 'FontSize', 12);
 
-% 3: Phase of DFT
-nexttile;
-stem(k, angle(X), 'filled');
-title('Phase of DFT \angleX[k]');
-xlabel('k (frequency bin)'); ylabel('Phase (radians)');
+% Plot 3: Phase spectrum
+subplot(2,2,3);
+stem(n, angle(X), 'filled', 'LineWidth', 1.5);
+title('FFT phase');
+xlabel('k (frequency bin)');
+ylabel('Phase (radians)');
 grid on;
+set(gca, 'FontSize', 12);
 
-% 4: Comparison original vs reconstructed (real part)
-nexttile;
-stem(n, x, 'b', 'filled');
-hold on;
-stem(n, real(x_reconstructed), 'r--', 'filled');
-hold off;
-legend('Original','Reconstructed (real part)');
-title('Original vs Reconstructed');
-xlabel('n'); ylabel('Amplitude');
+% Plot 4: Reconstructed time-domain signal
+subplot(2,2,4);
+stem(n, real(x_reconstructed), 'filled', 'LineWidth', 1.5);
+title('Signal reconstructed from IFFT');
+xlabel('n (sample index)');
+ylabel('Amplitude');
 grid on;
+set(gca, 'FontSize', 12);
 
-% 5: Imaginary part of reconstructed
-nexttile;
-stem(n, imag(x_reconstructed), 'm', 'filled');
-title('Imaginary part of reconstructed (should be ~0)');
-xlabel('n'); ylabel('Imaginary part');
-grid on;
-
-% --- Local functions --------------------------------------------------
-function X = my_dft(x)
-    % Compute DFT via direct summation
-    x = x(:).';            % ensure row vector
-    N = length(x);
-    X = zeros(1, N);
-    for k = 0:N-1
-        s = 0;
-        for n = 0:N-1
-            s = s + x(n+1) * exp(-1j*2*pi*k*n / N);
-        end
-        X(k+1) = s;
-    end
-end
-
-function x = my_idft(X)
-    % Compute IDFT via direct summation
-    X = X(:).';            % ensure row vector
-    N = length(X);
-    x = zeros(1, N);
-    for n = 0:N-1
-        s = 0;
-        for k = 0:N-1
-            s = s + X(k+1) * exp(1j*2*pi*k*n / N);
-        end
-        x(n+1) = s / N;
-    end
+% Optional overall title (requires MATLAB R2018b or later)
+if exist('sgtitle','builtin')
+    sgtitle('FFT Analysis');
 end
