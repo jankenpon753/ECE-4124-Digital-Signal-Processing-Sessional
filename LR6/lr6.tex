@@ -1,0 +1,242 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper, total={6.5in, 9.4in}]{geometry}
+\usepackage{graphicx}
+\graphicspath{ {./images/output/} }
+\usepackage{caption}
+\usepackage[english]{babel}
+\usepackage{titling}
+\usepackage{float}
+\usepackage{amsmath}
+\usepackage{minted}
+\usepackage{multicol}
+\usepackage{array}
+\usepackage{setspace}
+\usepackage{placeins}
+
+\usepackage{parskip}
+
+% \usepackage{lipsum}
+
+\title{Design \& Analysis of a Low-Pass FIR and IIR Filter \& Their frequency Response Comparisons}
+\author{}
+\date{}
+
+\pagenumbering{gobble}
+\begin{document}
+\input{faysal_sir_cover.tex}
+
+\pagebreak
+
+\tableofcontents
+
+\pagebreak
+\pagenumbering{arabic}
+\maketitle
+
+\section*{Theory}
+\addcontentsline{toc}{section}{Theory}
+\noindent This experiment compares a windowed FIR low-pass filter and a Butterworth IIR low-pass filter by designing both to attenuate frequencies above a specified cutoff and by inspecting their frequency- and time-domain behaviour \cite{oppenheim1999,proakis2006}.
+
+\bigskip
+
+\noindent Design parameters
+\begin{itemize}
+    \item Sampling frequency: $f_s$.
+    \item Cutoff frequency: $f_\mathrm{c}$.
+    \item FIR order: $N$ (even or odd -- the design used a fixed order).
+    \item IIR prototype: Butterworth of order $M$ (maximally flat in the passband).
+\end{itemize}
+The normalized digital cutoff used for design (normalized to Nyquist, as used by many DSP toolboxes) is
+\[
+    \omega_\mathrm{n} = \frac{f_\mathrm{c}}{f_s/2}\qquad (0<\omega_\mathrm{n}\le 1).
+\]
+The corresponding angular cutoff in radians/sample is
+\[
+    \Omega_\mathrm{c} = 2\pi\frac{f_\mathrm{c}}{f_s}.
+\]
+
+\bigskip
+
+\noindent FIR design (windowed FIR)
+
+The ideal (infinite-length) low-pass impulse response with cutoff $\Omega_\mathrm{c}$ is
+\[
+    h_d[n] = \begin{cases}
+        \dfrac{\sin\big(\Omega_\mathrm{c}(n - N/2)\big)}{\pi (n - N/2)}, & n\neq N/2, \\[6pt]
+        \dfrac{\Omega_\mathrm{c}}{\pi},                                  & n = N/2.
+    \end{cases}
+\]
+A causal, finite-length FIR is obtained by windowing:
+\[
+    h[n] = h_d[n]\,w[n],\qquad n=0,\dots,N,
+\]
+where $w[n]$ is a window (e.g. Hamming, Hann, Blackman). The resulting frequency response is
+\[
+    H(e^{j\Omega}) = \sum_{n=0}^{N} h[n] e^{-j\Omega n}.
+\]
+For symmetric coefficients (linear phase) the group delay is constant and approximately
+\[
+    \tau_g \approx \frac{N}{2}\ \text{samples}.
+\]
+Window design and the trade-offs between main-lobe width and sidelobe level are discussed in detail in standard texts \cite{oppenheim1999,lyons2011}.
+
+\bigskip
+
+\noindent IIR design (Butterworth)
+
+The (continuous-time) Butterworth prototype magnitude-squared response is
+\[
+    |H_a(j\Omega)|^2 = \frac{1}{1 + \big(\tfrac{\Omega}{\Omega_c}\big)^{2M}},
+\]
+where $M$ is the analog prototype order and $\Omega_c$ is the analog cutoff. A digital Butterworth is typically obtained by prewarping and bilinear transform:
+\[
+    s \leftarrow \frac{2}{T}\frac{1-z^{-1}}{1+z^{-1}},\qquad T=\frac{1}{f_s},
+\]
+leading to a causal IIR with difference equation (direct form)
+\[
+    y[n] = \frac{1}{a_0}\Big(\sum_{k=0}^{M} b_k\,x[n-k] - \sum_{k=1}^{M} a_k\,y[n-k]\Big),
+\]
+and frequency response
+\[
+    H(e^{j\Omega}) = \frac{\sum_{k=0}^{M} b_k e^{-j\Omega k}}{\sum_{k=0}^{M} a_k e^{-j\Omega k}}.
+\]
+Butterworth IIRs give steep roll-off for modest orders but exhibit nonlinear phase; design procedures and bilinear-transform details are treated in standard DSP references \cite{proakis2006,oppenheim1999}.
+
+\bigskip
+
+\noindent Frequency-domain measures
+
+Magnitude in decibels is plotted as
+\[
+    \mathrm{Mag}_{\mathrm{dB}}(\Omega)=20\log_{10}\big|H(e^{j\Omega})\big|.
+\]
+When computing the dB scale numerically, avoid log of zero by flooring small magnitudes (e.g. $ \max(|H|,\epsilon)$). Numerical plotting and display considerations are discussed in practical DSP texts \cite{lyons2011}.
+
+\bigskip
+
+\noindent Time-domain considerations
+
+Filter impulse response length (finite for FIR, infinite for IIR) determines transient behaviour. The FIR's linear phase preserves waveform shape aside from the constant delay $\tau_g$; the IIR can introduce phase distortion and ringing near transients \cite{proakis2006,oppenheim1999}.
+
+\bigskip
+
+\noindent Examples
+
+\begin{enumerate}
+    \item Example A (typical audio-ish design)
+          \begin{itemize}
+              \item $f_s=48\text{ kHz}$, $f_\mathrm{c}=5\text{ kHz}$.
+              \item FIR order $N=50$ (use Hamming window). Normalized cutoff for toolbox calls:
+                    \[
+                        \omega_\mathrm{n}=\frac{5000}{48000/2}=0.20833.
+                    \]
+                    MATLAB (conceptual):
+                    \begin{minted}[fontsize=\small]{matlab}
+Wn = 5000/(48000/2); b = fir1(50, Wn, hamming(51));
+        \end{minted}
+              \item Butterworth IIR order $M=4$ (prewarp + bilinear):
+                    \begin{minted}[fontsize=\small]{matlab}
+[b,a] = butter(4, Wn); y = filter(b,a,x);
+        \end{minted}
+          \end{itemize}
+
+    \item Example B (narrow transition)
+          \begin{itemize}
+              \item $f_s=32\text{ kHz}$, $f_\mathrm{c}=2\text{ kHz}$, FIR order $N=200$ to obtain a sharper transition; compare to a Butterworth $M=6$.
+              \item Expect: FIR has clean linear-phase passband, large group delay $\approx100$ samples; Butterworth attains similar attenuation with lower order but nonlinear phase.
+          \end{itemize}
+\end{enumerate}
+
+\bigskip
+
+\noindent Practical notes and interpretation
+\begin{itemize}
+    \item Use sufficiently dense frequency sampling (e.g. several hundred or thousand points) to capture detailed response features.
+    \item Handle numerical zeros when converting to dB and when plotting narrow stop-bands.
+    \item For time-domain fidelity (no phase distortion) prefer FIR; for low-complexity steep roll-off prefer IIR and consider phase compensation if needed.
+\end{itemize}
+
+\bigskip
+
+\noindent The two filter families each have trade-offs: FIR yields linear phase and predictable group delay at the cost of higher order for sharp transitions, while Butterworth IIR achieves sharp attenuation with lower order but exhibits nonlinear phase and infinite-duration impulse response. The frequency- and time-domain plots provide direct visualization of these trade-offs for the chosen parameters\cite{oppenheim1999,proakis2006,lyons2011}.
+
+\section*{Used Tools}
+\addcontentsline{toc}{section}{Used Tools}
+\begin{itemize}
+    \item Matlab Online
+    \item LaTex
+\end{itemize}
+
+\section*{Code \& Output}
+\addcontentsline{toc}{section}{Code \& Output}
+
+\subsection*{Code}
+\addcontentsline{toc}{subsection}{Code}
+\begin{multicols}{2}
+    \inputminted[fontsize=\small, linenos, breaklines]{matlab}{assets/fir.m}
+\end{multicols}
+
+\subsection*{Output}
+\addcontentsline{toc}{subsection}{Output}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{output.png}
+    \caption{Frequency and Time Domain Responses of FIR and IIR Filters}
+    \label{output}
+\end{figure}
+
+\section*{Analysis}
+\addcontentsline{toc}{section}{Analysis}
+
+\subsection*{Brief analysis --- FIR vs IIR low‑pass filters (based on Figure \ref{output})}
+\addcontentsline{toc}{subsection}{Brief analysis --- FIR vs IIR low‑pass filters}
+
+\noindent\textbf{Summary}
+\begin{itemize}
+    \item Top subplot (FIR magnitude, dB): clear passband near 0\,Hz, a transition band, then periodic deep nulls / stop‑band ripples at higher frequencies; passband is fairly flat near 0\,dB.
+    \item Middle subplot (IIR / Butterworth magnitude, dB): smooth monotonic roll‑off from the passband to deep attenuation without periodic nulls; the curve decreases smoothly and reaches very large negative dB values at high frequencies.
+    \item Bottom subplot (time domain): original (black) overlaid with FIR (red) and IIR (blue). FIR output is visibly delayed but preserves waveform shape; IIR output shows reduced amplitude and some phase/shape differences (nonlinear phase and transient effects).
+\end{itemize}
+
+\noindent\textbf{Key observations}
+\begin{itemize}
+    \item \textbf{FIR magnitude:}
+          \begin{itemize}
+              \item Linear‑phase symmetry yields an approximately constant group delay $\approx N/2$ samples, visible as the time delay in the time‑domain plot.
+              \item Windowing sidelobes / spectral leakage produce periodic notches and ripples in the stopband.
+              \item Passband is relatively flat and predictable.
+          \end{itemize}
+
+    \item \textbf{IIR magnitude:}
+          \begin{itemize}
+              \item Provides steeper, monotonic attenuation for a given filter order, yielding stronger stop‑band suppression with fewer coefficients.
+              \item Lacks linear phase; phase varies with frequency, causing waveform distortion and altered transient behaviour.
+              \item Extremely large negative dB values at high frequencies are visible (note: numerical flooring was likely applied to avoid $-\infty$ when plotting in dB).
+          \end{itemize}
+
+    \item \textbf{Time domain:}
+          \begin{itemize}
+              \item FIR preserves waveform shape better, with the primary effect being a constant delay.
+              \item IIR introduces amplitude/phase distortion and possible ringing around sharp events; overall output magnitude can be lower for this design.
+              \item Both filters remove high‑frequency content, but the FIR output aligns with the input except for delay, while the IIR output shows shape changes due to nonlinear phase.
+          \end{itemize}
+\end{itemize}
+
+\section*{Discussion}
+\addcontentsline{toc}{section}{Discussion}
+
+The results confirm the expectations: the windowed FIR (Hamming, order $N$) exhibits a smooth passband with low sidelobes and a transition width that narrows as $N$ increases, while the Butterworth IIR (order $M$) attains a steeper roll‑off at lower order; the FIR has essentially linear phase with constant group delay $\approx N/2$ preserving waveform shape, whereas the IIR shows nonlinear phase and may introduce transient ringing; numerically, magnitudes were floored before dB conversion to avoid $-\infty$ spikes and the IIR was obtained via the bilinear transform (prewarp when the cutoff is high relative to Nyquist); in practice choose FIR for phase fidelity and IIR for lower complexity/steeper attenuation, or compensate IIR phase / raise FIR order when required.
+
+\section*{Conclusion}
+\addcontentsline{toc}{section}{Conclusion}
+
+This experiment demonstrated the complementary strengths of windowed FIR and Butterworth IIR low-pass filters. The FIR (Hamming window) provides linear phase and predictable group delay at the expense of higher order to achieve a narrow transition band. The Butterworth IIR achieves sharper roll-off with lower order and computational cost but at the cost of nonlinear phase and potential transient distortion. Choice of filter should therefore be driven by application requirements: prefer FIR for phase-sensitive signals and IIR for resource-constrained designs needing rapid attenuation. Practical implementations must also account for numerical issues (dB flooring, coefficient quantization) and, for IIRs, pole stability.
+
+
+\bibliographystyle{IEEEtran}
+\renewcommand{\bibname}{References}
+\addcontentsline{toc}{section}{References}
+\bibliography{ref}
+
+\end{document}
